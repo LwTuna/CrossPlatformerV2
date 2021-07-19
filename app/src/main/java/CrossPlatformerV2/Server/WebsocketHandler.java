@@ -28,9 +28,7 @@ public class WebsocketHandler implements Consumer<WsHandler> {
     public void accept(WsHandler wsHandler) {
         wsHandler.onConnect(ctx -> {
             SessionUser sessionUser = SessionManager.getUserData(ctx.getSessionId());
-            if(sessionUser != null){
-                sessionUser = SessionManager.connectUser(ctx.getSessionId(),new SessionUser());
-            }
+
             if(!sessionUser.isLoggedIn()){
                 ctx.send(new JSONObject().put("key","websocketResponse").put("success", false).put("error","not logged in").toString());
                 ctx.session.close();
@@ -43,9 +41,7 @@ public class WebsocketHandler implements Consumer<WsHandler> {
         });
         wsHandler.onClose(ctx -> {
             SessionUser sessionUser = SessionManager.getUserData(ctx.getSessionId());
-            if(sessionUser != null){
-                sessionUser = SessionManager.connectUser(ctx.getSessionId(),new SessionUser());
-            }
+
             if(sessionUser.isLoggedIn()){
                 game.logOutUser(sessionUser);
             }

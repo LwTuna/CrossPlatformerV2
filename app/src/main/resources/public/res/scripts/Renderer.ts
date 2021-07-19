@@ -4,7 +4,7 @@ module Render{
         private context: CanvasRenderingContext2D;
         private drawInterval;
         constructor() {
-            this.canvas = document.getElementById("#mainCanvas") as HTMLCanvasElement;
+            this.canvas = document.getElementById("mainCanvas") as HTMLCanvasElement;
             this.context = this.canvas.getContext("2d");
         }
 
