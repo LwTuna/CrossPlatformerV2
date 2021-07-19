@@ -79,6 +79,6 @@ public class Game {
     }
 
     public void processMessage(SessionUser sessionUser, JSONObject object) {
-
+        System.out.println(object.toString(1));
     }
 }

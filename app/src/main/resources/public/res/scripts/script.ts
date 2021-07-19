@@ -1,32 +1,35 @@
-let renderer ;
+let renderer:Render.Renderer;
+
+let websocket:WebSocket;
 
 $(function (){
-    let body = {
-        username: "test1",
-        password:"test2"
-    };
 
-    sendRequest("post","login",body,(status, response) => console.log(status+"/"+response));
+
+    createWebsocketConnection();
+
+
     //renderer= new Render.Renderer();
     //renderer.start();
 });
 
-function sendRequest(method:string,head:string,body,callback:(status:number,response:string)=>void) {
-    const httpRequest = new XMLHttpRequest();
-    httpRequest.open(method,head+"?"+encodeURI(JSON.stringify(body)));
 
-    httpRequest.onreadystatechange = function () {
+function createWebsocketConnection(){
+    websocket = new WebSocket("ws://"+location.host+"/game");
+    websocket.onopen = function () {
+        console.log("Connected!");
+        let body = {
+            key: "login",
+            username:"test2",
+            password:"test3"
+        };
 
-        if(this.readyState == 4){
-            //let response = JSON.parse(this.responseText);
-            callback(this.status,this.responseText);
-        }
+
+        websocket.send(JSON.stringify(body));
     };
-
-    httpRequest.timeout = 5000;
-    httpRequest.ontimeout = function () {
-        alert("Connection lost.");
+    websocket.onmessage = ev => {
+        console.log(ev);
     };
-    httpRequest.send();
 }
+
+
 

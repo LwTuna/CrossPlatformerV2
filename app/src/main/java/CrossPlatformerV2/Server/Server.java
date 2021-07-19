@@ -36,27 +36,8 @@ public class Server{
             config.addStaticFiles("/public");
         }).start(7070);
 
-        javalin.ws("game", new WebsocketHandler(this));
-        javalin.post("login",ctx -> {
-            String sessionId = ctx.req.getSession().getId();
-            var userData = SessionManager.getUserData(sessionId);
-            if(userData.isLoggedIn()){
-                ctx.result(new JSONObject().put("success",false).put("error","already Logged in").toString());
+        javalin.ws("/game", new WebsocketHandler(this));
 
-            }else {
-                JSONObject request = new JSONObject(URLDecoder.decode(ctx.queryString(), StandardCharsets.UTF_8.toString()));
-                JSONObject userObject = DatabaseManager.login(request.getString("username"),request.getString("password"));
-                if(userObject == null){
-                    ctx.result(new JSONObject().put("success",false).put("error","wrong username or password").toString());
-                }else{
-                    userData.setLoggedIn(userObject.getInt("id"),sessionId);
-                    ctx.status(200);
-                    ctx.result(new JSONObject().put("success",true).toString());
-                }
-            }
-
-
-        });
     }
 
 

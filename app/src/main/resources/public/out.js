@@ -17,28 +17,25 @@ var Render;
     Render.Renderer = Renderer;
 })(Render || (Render = {}));
 var renderer;
+var websocket;
 $(function () {
-    var body = {
-        username: "test1",
-        password: "test2"
-    };
-    sendRequest("post", "login", body, function (status, response) { return console.log(status + "/" + response); });
+    createWebsocketConnection();
     //renderer= new Render.Renderer();
     //renderer.start();
 });
-function sendRequest(method, head, body, callback) {
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open(method, head + "?" + encodeURI(JSON.stringify(body)));
-    httpRequest.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            //let response = JSON.parse(this.responseText);
-            callback(this.status, this.responseText);
-        }
+function createWebsocketConnection() {
+    websocket = new WebSocket("ws://" + location.host + "/game");
+    websocket.onopen = function () {
+        console.log("Connected!");
+        var body = {
+            key: "login",
+            username: "test2",
+            password: "test3"
+        };
+        websocket.send(JSON.stringify(body));
     };
-    httpRequest.timeout = 5000;
-    httpRequest.ontimeout = function () {
-        alert("Connection lost.");
+    websocket.onmessage = function (ev) {
+        console.log(ev);
     };
-    httpRequest.send();
 }
 //# sourceMappingURL=out.js.map
